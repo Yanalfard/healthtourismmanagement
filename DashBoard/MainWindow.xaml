@@ -1,0 +1,371 @@
+﻿ <blur:BlurryWindow
+    x:Class="DashBoard.MainWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:blur="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
+    xmlns:gif="clr-namespace:XamlAnimatedGif;assembly=XamlAnimatedGif"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell"
+    xmlns:local="clr-namespace:DashBoard"
+    xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+    mc:Ignorable="d"
+    WindowState="Normal"
+    AllowsTransparency="True"
+    Background="#1444"
+    WindowStyle="None"
+    WindowStartupLocation="CenterScreen"
+    IsMenuBarVisible="False"
+    FlowDirection="RightToLeft"
+    Title="Main"
+    Height="768" Width="1366" StateChanged="BlurryWindow_StateChanged">
+
+    <blur:BlurryWindow.Triggers>
+        <EventTrigger RoutedEvent="blur:BlurryWindow.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <ThicknessAnimationUsingKeyFrames 
+                        BeginTime="0:0:0"
+                        Storyboard.TargetName="DockPanelMain"
+                        Storyboard.TargetProperty="Margin">
+                        <SplineThicknessKeyFrame KeyTime="0:0:0" Value="0,-150,0,0"/>
+                        <EasingThicknessKeyFrame KeyTime="0:0:0.6" Value="0">
+                            <EasingThicknessKeyFrame.EasingFunction>
+                                <SineEase EasingMode="EaseOut"/>
+                            </EasingThicknessKeyFrame.EasingFunction>
+                        </EasingThicknessKeyFrame>
+                    </ThicknessAnimationUsingKeyFrames>
+                    <DoubleAnimation
+                        Storyboard.TargetName="DockPanelMain"
+                        Storyboard.TargetProperty="Opacity"
+                        From="0" To="1" Duration="0:0:0.65"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </blur:BlurryWindow.Triggers>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+                CaptionHeight = "0"
+                CornerRadius ="0"
+                ResizeBorderThickness="8"         
+                GlassFrameThickness="0">
+        </WindowChrome>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ControlTemplate TargetType="Button" x:Key="BtnGlossy">
+            <Border Height="{TemplateBinding Height}"
+                    Width="{TemplateBinding Width}"
+                    Background="#0000"
+                    Focusable="False">
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                    Duration="0:0:0.12" To="#4aaa"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation 
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        Duration="0:0:0.5" To="#0000"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Border.Triggers>
+                <ContentPresenter
+                    x:Name="contentPresenter"   
+                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                    Content="{TemplateBinding Content}"
+                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    Margin="{TemplateBinding Margin}"
+                    VerticalAlignment="{TemplateBinding  VerticalContentAlignment}"/>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <DockPanel x:Name="DockPanelMain">
+        <!--MenuBar-->
+        <DockPanel x:Name="MenuBar"
+            MouseDown="MenuBar_MouseDown"
+            Panel.ZIndex="100"
+            DockPanel.Dock="Top"
+            Height="28"
+            Background="{StaticResource ColorNeutralDarkMid}">
+            <DockPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="28"/>
+                    <Setter Property="IsHitTestVisible" Value="True"/>
+                    <Setter Property="Background" Value="#0000"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+                
+                <Canvas x:Key="PathRestore"  Name="pathRestore">
+                    <Rectangle Margin="-4,-1,0,0" Panel.ZIndex="2" StrokeThickness="1" x:Name="rect"
+                        Width="10" Height="10" Stroke="#fff" Fill="#333"
+                               />
+                    <Rectangle Margin="-8,-6,0,0" Panel.ZIndex="0" StrokeThickness="1"
+                        Width="10" Height="10" Stroke="#fff" Fill="#363636"
+                               />
+                </Canvas>
+                
+                <Canvas x:Key="PathMaximize" Name="pathMaximize">
+                    <Rectangle Margin="-6,-4,0,0" Panel.ZIndex="2" StrokeThickness="1"
+                        Width="12" Height="12" Stroke="#fff"/>
+                </Canvas>
+                
+            </DockPanel.Resources>
+            
+            <Button x:Name="BtnClose" Template="{StaticResource BtnGlossy}"
+                    Click="BtnClose_Click">
+                <Canvas>
+                    <Line 
+                    X1="-6" Y1="-4"
+                    X2="6" Y2="8"
+                    Stroke="#fff"
+                    StrokeThickness="1.2" />
+                    <Line 
+                    X1="6" Y1="-4"
+                    X2="-6" Y2="8"
+                    Stroke="#fff"
+                    StrokeThickness="1.2" />
+                </Canvas>
+            </Button>
+            
+            <Button x:Name="BtnMaximize" Template="{StaticResource  BtnGlossy}"
+                    Click="BtnMaximize_Click" Content="{StaticResource PathMaximize}">
+
+            </Button>
+            
+            <Button x:Name="BtnMinimize" Template="{StaticResource  BtnGlossy}" 
+                    Click="BtnMinimize_Click">
+                <Line 
+                    X1="0"  Y1="15"
+                    X2="12" Y2="15"
+                    Stroke="#fff"
+                    StrokeThickness="1.2" />
+            </Button>
+            
+            <Border x:Name="BrdPreLoader" Opacity="0"
+                    Background="#F1F2F3" Margin="5" Effect="{StaticResource ShadowMedium}"
+                        CornerRadius="10" Width="42" HorizontalAlignment="Right">
+                <Image  HorizontalAlignment="Center" Margin="2"
+                    gif:AnimationBehavior.SourceUri="Resources/Animation/LoadingHorizontalLight.gif"/>
+            </Border>
+        </DockPanel>
+
+        <DockPanel Panel.ZIndex="80">
+            <StackPanel x:Name="StckHamburger" Width="48">
+                <StackPanel.Triggers>
+                    <EventTrigger RoutedEvent="StackPanel.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Width"
+                                    Storyboard.TargetName="StckHamburger"
+                                    To="48" Duration="0:0:0.5">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="StackPanel.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Width"
+                                    Storyboard.TargetName="StckHamburger"
+                                    To="128" Duration="0:0:0.5">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CircleEase/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </StackPanel.Triggers>
+                <!--ToolBar-->
+                <Border DockPanel.Dock="Top" Background="#353535" 
+                        Panel.ZIndex="110">
+                    <StackPanel Margin="6,0,0,0"
+                       
+                                x:Name="PnlTraverse"
+                                Height="64" 
+                                Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <!--<Style TargetType="Button">
+                                <Setter Property="Foreground" Value="#fff"/>
+                                <Setter Property="Height" Value="{Binding ElementName=pnlTraverse , Path=Height}"/>
+                                <Setter Property="Width" Value="65"/>
+                            </Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Setter Property="Height" Value="32"/>
+                                <Setter Property="Width"  Value="32"/>
+                            </Style>-->
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource ColorWhite}"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Margin" Value="5,4,0,4 "/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <!--<Button Template="{StaticResource btnGlossy}">
+                            <materialDesign:PackIcon Kind="KeyboardArrowRight" />
+                        </Button>
+                        <Button Template="{StaticResource btnGlossy}">
+                            <materialDesign:PackIcon Kind="KeyboardArrowLeft" />
+                        </Button>-->
+                        <Border Width="36" Height="36" CornerRadius="18" 
+                                Effect="{StaticResource ShadowMinor}" 
+                                BorderThickness="1.2"
+                                Background="#1B1B1B"
+                                BorderBrush="{StaticResource ColorPrimaryMid}">
+                            <!--<Image x:Name="txtUserImage" />-->
+                            <materialDesign:PackIcon Kind="User"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center" Margin="6,0,0,0">
+                            <TextBlock x:Name="TxtUserName" Text="مجید فاضلی"
+                                       FontSize="12" 
+                                   VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TxtUserState" Text="آنلاین" FontSize="8.2"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <!--splitter-->
+                <!--<Border Height="2" Background="#3fff" Margin="7,4"/>-->
+                <!--GlossyMenu-->
+                <Border>
+                    <StackPanel Width="130"  x:Name="Ham">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Height" Value="48"/>
+                                <Setter Property="Template" Value="{StaticResource BtnGlossy}"/>
+                                <Setter Property="Foreground" Value="#fff"/>
+                                <Setter Property="IsTabStop" Value="False"/>
+                            </Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Grid.Column" Value="0"/>
+                                <Setter Property="Margin" Value="4"/>
+                            </Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="DockPanel.Dock" Value="Left"/>
+                                <Setter Property="Margin" Value="8,4"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="Grid.Column" Value="1"/>
+                            </Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Width" Value="130"/>
+                                <Setter Property="Margin" Value="8,0,0,0"/>
+                            </Style>
+                            <Style TargetType="svgc:SvgCanvas">
+                                <Setter Property="FlowDirection" Value="LeftToRight"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button x:Name="BtnPatientView" Click="BtnPatientView_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True"
+                        Source="pack://application:,,,/Resources/Hamburger/Patient.svg"/>
+                                <TextBlock Text="مشتریان"/>
+                            </Grid>
+                        </Button>
+                        <Button x:Name="BtnGrids" Click="BtnGrids_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True"
+                        Source="pack://application:,,,/Resources/Hamburger/Grid.svg"/>
+                                <TextBlock Text="جدول ها"/>
+                            </Grid>
+                        </Button>
+                        <Button x:Name="BtnMail" Click="BtnMail_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True"
+                        Source="pack://application:,,,/Resources/Hamburger/Mail.svg"/>
+                                <TextBlock Text="نامه ها"/>
+                            </Grid>
+                        </Button>
+                        <Button x:Name="BtnNews" Click="BtnNews_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True" 
+                        Source="pack://application:,,,/Resources/Hamburger/News.svg"/>
+                                <TextBlock Text="اخبار"/>
+                            </Grid>
+                        </Button>
+                        <Button x:Name="BtnDatabase" Visibility="Collapsed">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True" 
+                        Source="pack://application:,,,/Resources/Hamburger/DataBase.svg"/>
+                                <TextBlock Text="پایگاه داده"/>
+                            </Grid>
+                        </Button>
+                        <Button x:Name="BtnSettings">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <svgc:SvgCanvas AutoSize="True" 
+                        Source="pack://application:,,,/Resources/Hamburger/Settings.svg"/>
+                                <TextBlock Text="تنظیمات"/>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <!--ActualContent-->
+            <Grid
+                Panel.ZIndex="70"
+                Background="#E9E9E9">
+                <Frame x:Name="FrameDataView"   Visibility="Visible"
+                       NavigationUIVisibility="Hidden"
+                        Panel.ZIndex="50"/>
+                <Frame x:Name="FrameTickets"  Visibility="Collapsed"
+                       NavigationUIVisibility="Hidden"
+                        Panel.ZIndex="50"/>
+                <Frame x:Name="FrameNews" Visibility="Collapsed"
+                       NavigationUIVisibility="Hidden"
+                        Panel.ZIndex="50"/>
+                <Frame x:Name="FrameNewsEditor" Visibility="Collapsed"
+                       NavigationUIVisibility="Hidden"
+                        Panel.ZIndex="50"/>
+                <Frame x:Name="FramePatientView" Visibility="Collapsed"
+                       NavigationUIVisibility="Hidden"
+                       Panel.ZIndex="50"/>
+                <Frame x:Name="FrameTemp" Visibility="Collapsed"
+                       NavigationUIVisibility="Hidden"
+                       Panel.ZIndex="50"/>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
+
+</blur:BlurryWindow>

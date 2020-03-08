@@ -1,0 +1,64 @@
+﻿<Page x:Class="DashBoard.NewsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DashBoard"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      FlowDirection="RightToLeft"
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Title="NewsPage"
+      Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <local:DataNameTranslationConverter x:Key="NameConverter"/>
+    </Page.Resources>
+
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <!--ToolBar-->
+            <Border DockPanel.Dock="Top" Panel.ZIndex="100"
+                        Background="#353535"  Effect="{StaticResource ShadowMajor}">
+                <StackPanel Height="64" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <!--btnRefresh-->
+                    <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnRefresh"
+                            Click="BtnRefresh_Click"
+                        Width="64" Height="64" DockPanel.Dock="Left">
+                        <materialDesign:PackIcon Kind="Refresh" Width="32" Height="32" 
+                                                 HorizontalAlignment="Center"/>
+                    </Button>
+                    <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnAdd" 
+                            PreviewMouseDown="BtnAdd_MouseDown"
+                            Width="64" Height="64" 
+                            DockPanel.Dock="Left">
+                        <materialDesign:PackIcon 
+                            Kind="Add" Width="32" Height="32" 
+                            HorizontalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </Border >
+
+            <DockPanel Panel.ZIndex="70" LastChildFill="True">
+                <Border DockPanel.Dock="Top" Panel.ZIndex="70"
+                            Effect="{StaticResource ShadowMinor}" 
+                                Background="{StaticResource ColorNeutralLight}" 
+                                Height="64"/>
+                <ScrollViewer>
+                    <StackPanel x:Name="StckMain"
+                    Background="{StaticResource ColorContentViewerGray}">
+                        <StackPanel.Resources>
+                            <Style TargetType="local:NewsViewer">
+                                <Setter Property="Height" Value="100"/>
+                                <Setter Property="Margin" Value="20,30,20,0"/>
+                                <EventSetter Event="PreviewMouseDown" Handler="NewsViewer_PreviewMouseDown"/>
+                            </Style>
+                        </StackPanel.Resources>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </DockPanel>
+    </Grid>
+</Page>

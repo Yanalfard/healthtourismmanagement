@@ -1,0 +1,106 @@
+﻿<Application x:Class="DashBoard.App"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DashBoard"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--Material-->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Blue.xaml" />
+
+                <!--Colors-->
+                <ResourceDictionary Source="pack://application:,,,/Styles/Colours.xaml"/>
+                <!--Effects-->
+                <ResourceDictionary Source="pack://application:,,,/Styles/Effects.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="DataGridDefault" TargetType="DataGridRow" 
+               BasedOn="{StaticResource {x:Type DataGridRow}}"/>
+            <Style TargetType="materialDesign:PackIcon">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <!--<Setter Property="Foreground" Value="{StaticResource ColorWhite}"/>-->
+                <Setter Property="Margin" Value="6,0"/>
+            </Style>
+
+            <!--Generated-->
+            <Style TargetType="TextBlock" x:Key="GenTxt">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Margin" Value="12"/>
+                <Setter Property="Width" Value="180"/>
+                <Setter Property="IsHitTestVisible" Value="False"/>
+            </Style>
+            <Style TargetType="TextBox" x:Key="GenTxtBox">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Padding" Value="6"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Width" Value="180"/>
+            </Style>
+            <Style TargetType="CheckBox" x:Key="GenChkBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="Margin" Value="6,0"/>
+                <Setter Property="Width" Value="30"/>
+                <Setter Property="Background" Value="Red"/>
+            </Style>
+
+            <ControlTemplate TargetType="Button" x:Key="BtnGlossy">
+                <ControlTemplate.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize" Value="14"/>
+                    </Style>
+                </ControlTemplate.Resources>
+                <Border Height="{TemplateBinding Height}"
+                    Width="{TemplateBinding Width}"
+                    Background="#0000"
+                    Focusable="False">
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                    Duration="0:0:0.1" To="#4aaa"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation 
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        Duration="0:0:0.6" To="#0000"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Border.Triggers>
+                    <ContentPresenter
+                         x:Name="contentPresenter"   
+                         ContentTemplate="{TemplateBinding ContentTemplate}"
+                         Content="{TemplateBinding Content}"
+                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                         Margin="{TemplateBinding Margin}"
+                         VerticalAlignment="{TemplateBinding  VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

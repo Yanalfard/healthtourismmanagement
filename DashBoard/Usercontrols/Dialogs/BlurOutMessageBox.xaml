@@ -1,0 +1,87 @@
+﻿<blur:BlurryWindow 
+    x:Name="MainWindow"
+    x:Class="DashBoard.BlurOutMessageBox"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:blur="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:DashBoard"
+    xmlns:conv="clr-namespace:DashBoard.ValueConverters"
+    mc:Ignorable="d"
+    WindowState="Maximized"
+    IsMenuBarVisible="False"
+    WindowStyle="None"
+    FlowDirection="RightToLeft" 
+    Title="BlurOutMessageBox"
+    Background="#4222"
+    Loaded="BlurryWindow_Loaded">
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="blur:BlurryWindow.Loaded">
+            <BeginStoryboard >
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     Storyboard.TargetName="MainWindow"
+                        From="0" To="1" Duration="0:0:0.180"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Window.Resources>
+        <conv:StringToText x:Key="Converter1"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Border x:Name="MainBorder"
+                CornerRadius="12"  Background="#fff" Effect="{StaticResource ShadowMedium}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Padding="16">
+            <StackPanel>
+                <!--Title-->
+                <Border>
+                    <TextBlock x:Name="TbTitle" FontSize="17" Margin="8,0,8,12" Foreground="{StaticResource ColorText}"
+                           Text="{Binding MessageTitle , Converter={StaticResource Converter1}}"/>
+                </Border>
+                <!--Message-->
+                <TextBlock x:Name="TbMessage" MaxWidth="420" Foreground="{StaticResource ColorText}"
+                       Text="{Binding Message}" 
+                       TextWrapping="WrapWithOverflow"
+                       Margin="8,0,8,12"
+                       FontSize="14"/>
+                <!--Buttons-->
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Margin" Value="0,0,10,0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button x:Name="BtnAccept"
+                            Click="BtnAccept_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Check"/>
+                            <TextBlock Text="{Binding AcceptText}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="BtnReject"
+                            Click="BtnReject_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Close"/>
+                            <TextBlock Text="{Binding RejectText}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="BtnCancel" 
+                            Click="BtnCancel_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="KeyboardBackspace"/>
+                            <TextBlock Text="{Binding CancelText}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</blur:BlurryWindow>

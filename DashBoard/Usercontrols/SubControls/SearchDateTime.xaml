@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="DashBoard.SearchDateTime"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DashBoard"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             IsTabStop="False"
+             FlowDirection="RightToLeft"
+             d:DesignHeight="64" d:DesignWidth="180" MaxWidth="180"
+             Background="#E9E9E9"
+             Margin="12,0,0,0">
+
+    <UserControl.Resources>
+        <local:DataNameTranslationConverter x:Key="NameConverter"/>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <DockPanel.Triggers>
+            <EventTrigger RoutedEvent="DockPanel.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation To="1" Duration="0:0:0.2"
+                                         Storyboard.TargetProperty="Opacity"
+                                         Storyboard.TargetName="BtnSearch"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="DockPanel.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation To="0" Duration="0:0:0.2"
+                                         Storyboard.TargetProperty="Opacity"
+                                         Storyboard.TargetName="BtnSearch"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </DockPanel.Triggers>
+        <Button x:Name="BtnSearch" DockPanel.Dock="Right" 
+                Margin="4,0" IsTabStop="False"
+                Width="32" Height="32" Opacity="0" 
+                Tag="{Binding ElementName=TxtInput, Path=Text}"
+                Style="{DynamicResource MaterialDesignToolButton}">
+            <materialDesign:PackIcon
+                Kind="Magnify"
+                Opacity=".56" />
+        </Button>
+        <DatePicker x:Name="TxtInput" IsTabStop="False" 
+                 materialDesign:HintAssist.Hint="{Binding FieldName, Converter={StaticResource NameConverter}}"
+                 Text="{Binding FieldText}"
+                 FontSize="18" Foreground="{StaticResource ColorText}" 
+                   VerticalAlignment="Center" Margin="0,0,8,0" MinWidth="80"/>
+    </DockPanel>
+</UserControl>

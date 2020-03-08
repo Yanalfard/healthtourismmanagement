@@ -1,0 +1,344 @@
+﻿<Page x:Class="DashBoard.NewsEditor"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DashBoard"
+      xmlns:cmd="clr-namespace:DashBoard.Commands"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+      mc:Ignorable="d" 
+      FlowDirection="RightToLeft"
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Title="NewsEditor"
+      Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <local:DataNameTranslationConverter x:Key="NameConverter"/>
+    </Page.Resources>
+
+    <Page.CommandBindings>
+        <CommandBinding Command="Open" Executed="Open"/>
+        <CommandBinding Command="Save" Executed="Save" CanExecute="CanSave" />
+        <CommandBinding Command="SaveAs" Executed="SaveAs" CanExecute="CanSave" />
+        <CommandBinding Command="Cut" Executed="Cut" CanExecute="CanCut" />
+        <CommandBinding Command="Copy" Executed="Copy" CanExecute="CanCopy" />
+        <CommandBinding Command="Paste" Executed="Paste" CanExecute="CanPaste"/>
+        <CommandBinding Command="Undo" Executed="Undo" CanExecute="CanUndo"/>
+        <CommandBinding Command="Redo" Executed="Redo" CanExecute="CanRedo"/>
+        <CommandBinding Command="ToggleBold" Executed="ToggleBold" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="ToggleItalic" Executed="ToggleItalic" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="ToggleUnderline" Executed="ToggleUnderline" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="cmd:CustomCommands.ToggleStrikeout" Executed="ToggleStrikeout" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="cmd:CustomCommands.FontLargen" Executed="FontLargen" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="cmd:CustomCommands.FontShrink" Executed="FontShrink" CanExecute="CanToggleBold"/>
+        <CommandBinding Command="cmd:CustomCommands.AlignRight" Executed="AlignRight" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.AlignLeft" Executed="AlignLeft" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.AlignCenter" Executed="AlignCenter" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.AlignJustify" Executed="AlignJustify" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.IndentLeft" Executed="IndentLeft" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.IndentRight" Executed="IndentRight" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.ToggleNumber" Executed="ToggleNumber" CanExecute="CanSave"/>
+        <CommandBinding Command="cmd:CustomCommands.ToggleBullet" Executed="ToggleBullet" CanExecute="CanSave"/>
+    </Page.CommandBindings> 
+
+    <Grid>
+        <DockPanel>
+            <!--ToolBar-->
+            <Border DockPanel.Dock="Top" Panel.ZIndex="100"
+                        Background="#353535"  Effect="{StaticResource ShadowMajor}">
+                <StackPanel Height="64" Orientation="Horizontal" FlowDirection="RightToLeft">
+
+                    <WrapPanel x:Name="WrpYesNo">
+                        <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnAccept" 
+                            PreviewMouseDown="BtnAccept_PreviewMouseDown"
+                            Width="64" Height="64" 
+                            DockPanel.Dock="Left">
+                            <materialDesign:PackIcon 
+                            Kind="Check" Width="32" Height="32" 
+                            HorizontalAlignment="Center" />
+                        </Button>
+                        <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnCancel" 
+                            PreviewMouseDown="BtnCancel_MouseDown"
+                        Width="64" Height="64" DockPanel.Dock="Left">
+                            <materialDesign:PackIcon Kind="Close" Width="32" Height="32" 
+                                                 HorizontalAlignment="Center"/>
+                        </Button>
+                    </WrapPanel>
+                    <WrapPanel x:Name="WrpOverview">
+                        <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnBack" 
+                            PreviewMouseDown="BtnBack_PreviewMouseDown"
+                            Width="64" Height="64" 
+                            DockPanel.Dock="Left">
+                            <materialDesign:PackIcon 
+                            Kind="ArrowForward" Width="32" Height="32" 
+                            HorizontalAlignment="Center" />
+                        </Button>
+                        <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnEdit" 
+                            PreviewMouseDown="BtnEdit_MouseDown"
+                        Width="64" Height="64" DockPanel.Dock="Left">
+                            <materialDesign:PackIcon Kind="Edit" Width="32" Height="32" 
+                                                 HorizontalAlignment="Center"/>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Border >
+            <Grid Background="#E9E9E9" x:Name="MainGrid" Panel.ZIndex="90">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!--Editor-->
+                <WrapPanel x:Name="StckMainEditor"
+                           IsEnabled="False"
+                    Grid.Column="0"  Panel.ZIndex="80"
+                           Background="{StaticResource ColorNeutralLight}"  
+                           Effect="{StaticResource ShadowMedium}">
+                    <StackPanel  Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#a000"/>
+                                <Setter Property="Width" Value="18"/>
+                                <Setter Property="TextAlignment" Value="Center"/>
+                                <Setter Property="FontFamily" Value="Palatino Linotype"/>
+                                <Setter Property="FontSize" Value ="16"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Setter Property="Foreground" Value="#a000"/>
+                                <Setter Property="Width" Value="18"/>
+                                <Setter Property="Height" Value="18"/>
+                            </Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Margin" Value="4"/>
+                                <Setter Property="Width" Value="32"/>
+                                <Setter Property="Height" Value="32"/>
+                                <Setter Property="Focusable" Value="False"/>
+                            </Style>
+                            <Style TargetType="Separator">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style TargetType="Line">
+                                <Setter Property="Stroke" Value="#aeaeae"/>
+                                <Setter Property="StrokeThickness" Value="2"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="X1" Value="0"/>
+                                <Setter Property="X2" Value="0"/>
+                                <Setter Property="Y1" Value="0"/>
+                                <Setter Property="Y2" Value="24"/>
+                            </Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Orientation" Value="Horizontal"/>
+                            </Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#efefef"/>
+                                <Setter Property="CornerRadius" Value="8"/>
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Margin" Value="4,4"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <!--ClipBoard-->
+                        <WrapPanel Margin="0,4,0,0">
+                            <Button Template="{StaticResource BtnGlossy}" Command="Open" ToolTip="باز کردن فایل" >
+                                <materialDesign:PackIcon Kind="OpenInBrowser"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="Save" ToolTip="ذخیره کردن" >
+                                <materialDesign:PackIcon Kind="ContentSave"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="SaveAs" ToolTip="ذخیره کردن به عنوان" >
+                                <materialDesign:PackIcon Kind="ContentSaveAll"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="Cut" ToolTip="کات">
+                                <materialDesign:PackIcon Kind="Scissors"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="Copy" ToolTip="کپی" >
+                                <materialDesign:PackIcon Kind="ContentCopy"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="Paste" ToolTip="پیست">
+                                <materialDesign:PackIcon Kind="ContentPaste"/>
+                            </Button>
+                        </WrapPanel>
+                        <!--Font-->
+                        <WrapPanel>
+                            <Border>
+                                <StackPanel>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="Redo" ToolTip="بازگشت">
+                                        <materialDesign:PackIcon Kind="Redo"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="Undo" ToolTip="برگشت">
+                                        <materialDesign:PackIcon Kind="Undo"/>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                            <Border>
+                                <ComboBox 
+                                    Name="EdcomboFonts" 
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                    SelectionChanged="EdcomboFonts_SelectionChanged"
+                                    MaxDropDownHeight="200" Height="28"
+                                    materialDesign:HintAssist.Hint="فونت"
+                                    IsEditable="True" 
+                                    HorizontalAlignment="Stretch"
+                                    Loaded="EdcomboFonts_Loaded"
+                                    Width="220" Margin="8,6"/>
+                            </Border>
+                        </WrapPanel>
+                        <WrapPanel>
+                            <!--<Separator Width="20"/>-->
+                            <Button Template="{StaticResource BtnGlossy}" Command="ToggleBold" ToolTip="بولد">
+                                <TextBlock Text="B" FontWeight="Bold"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="ToggleItalic" ToolTip="ایتالیک">
+                                <TextBlock Text="I" FontStyle="Italic"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="ToggleUnderline" ToolTip="آندرلاین">
+                                <TextBlock Text="U" TextDecorations="Underline"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.ToggleStrikeout" ToolTip="آندرلاین">
+                                <TextBlock Text="T" TextDecorations="StrikeThrough"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.FontLargen" ToolTip="بزرگ کردن متن">
+                                <materialDesign:PackIcon Kind="FormatFontSizeIncrease"/>
+                            </Button>
+                            <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.FontShrink" ToolTip="کوچک کردن متن">
+                                <materialDesign:PackIcon Kind="FormatFontSizeDecrease"/>
+                            </Button>
+                            <TextBox x:Name="TxtFontSize" Width="80" Height="26"
+                                     TextChanged="TxtFontSize_TextChanged"
+                                     ToolTip="اندازه فونت"
+                                     materialDesign:HintAssist.Hint="اندازه فونت" />
+                        </WrapPanel>
+                        <Border  Margin="5,8" Height="264">
+                            <StackPanel>
+                                <materialDesign:ColorPicker  
+                                x:Name="ColorPickerMain"
+                                MouseMove="ColorPickerMain_MouseMove"
+                                    MouseUp="ColorPickerMain_MouseUp"
+                                Color="Black"  Margin="4" 
+                                Height="256" Width="242" 
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                <ScrollViewer Margin="5" >
+                                    <StackPanel Orientation="Vertical"
+                                        x:Name="ScrollSwatches"/>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                        <!--Paragraph-->
+                        <!--<Button Template="{StaticResource btnGlossy}" Command="Paste" CommandParameter="prepend" ToolTip="Paste prepend with GemBox.Document">
+                            <materialDesign:PackIcon Kind="ContentPaste"/>
+                        </Button>
+                        <Button Template="{StaticResource btnGlossy}" Command="Paste" CommandParameter="append" ToolTip="Paste append with GemBox.Document">
+                            <materialDesign:PackIcon Kind="ContentPaste"/>
+                        </Button>-->
+                        <!--<Button Template="{StaticResource btnGlossy}" Command="Cut" ToolTip="Cut">
+                            <materialDesign:PackIcon Kind="Scissors"/>
+                        </Button>
+                        <Button Template="{StaticResource btnGlossy}" Command="Copy" ToolTip="Copy">
+                            <materialDesign:PackIcon Kind="ContentCopy"/>
+                        </Button>-->
+ 
+                        <Border>
+                            <StackPanel>
+                                <WrapPanel HorizontalAlignment="Right">
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.ToggleBullet" ToolTip="Bullets">
+                                        <materialDesign:PackIcon Kind="FormatListBulleted"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.ToggleNumber" ToolTip="Numbering">
+                                        <materialDesign:PackIcon Kind="FormatListNumbers"/>
+                                    </Button>
+                                </WrapPanel>
+                                <WrapPanel HorizontalAlignment="Center">
+                                    <Line/>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.IndentLeft" ToolTip="Decrease Indentation">
+                                        <materialDesign:PackIcon Kind="FormatIndentDecrease"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}"  Command="cmd:CustomCommands.IndentRight" ToolTip="Increase Indentation">
+                                        <materialDesign:PackIcon Kind="FormatIndentIncrease"/>
+                                    </Button>
+                                    <Line Width="1" />
+                                </WrapPanel>
+                                <WrapPanel HorizontalAlignment="Left">
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.AlignRight" ToolTip="Align Right">
+                                        <materialDesign:PackIcon Kind="FormatAlignRight"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.AlignCenter" ToolTip="Align Center">
+                                        <materialDesign:PackIcon Kind="FormatAlignCentre"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.AlignLeft" ToolTip="Align Left">
+                                        <materialDesign:PackIcon Kind="FormatAlignLeft"/>
+                                    </Button>
+                                    <Button Template="{StaticResource BtnGlossy}" Command="cmd:CustomCommands.AlignJustify" ToolTip="Align Justify">
+                                        <materialDesign:PackIcon Kind="FormatAlignJustify"/>
+                                    </Button>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </WrapPanel>
+
+                <!--Contents-->
+                <ScrollViewer Grid.Column="1" Panel.ZIndex="70">
+                    <Border 
+                        Margin="24" 
+                        Background="{StaticResource ColorNeutralLight}"
+                        Effect="{StaticResource ShadowMedium}"
+                        CornerRadius="22">
+                        <StackPanel>
+                            <TextBox x:Name="TxtTitle"
+                                Margin="12" HorizontalAlignment="Left"
+                                materialDesign:HintAssist.Hint="عنوان" Width="120" />
+                            <RichTextBox 
+                            TextChanged="RichTextBox_TextChanged"
+                            KeyDown="RichTextBox_KeyDown"
+                            LostFocus="RichTextBox_LostFocus"
+                            SelectionChanged="RichTextBox_SelectionChanged"
+                            Style="{Binding}"
+                            BorderThickness="0"
+                            Margin="12"
+                            MinHeight="200"
+                            IsReadOnly="True"
+                            x:Name="RichTextBox" 
+                            AcceptsTab="True" 
+                            VerticalScrollBarVisibility="Auto">
+                                <RichTextBox.ContextMenu>
+                                    <ContextMenu>
+                                        <ContextMenu.Resources>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Orientation" Value="Horizontal"/>
+                                            </Style>
+                                            <Style TargetType="materialDesign:PackIcon">
+                                                <Setter Property="Margin" Value="8"/>
+                                            </Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </ContextMenu.Resources>
+                                        <Button Command="Paste">
+                                            <StackPanel>
+                                                <materialDesign:PackIcon Kind="ContentPaste"/>
+                                                <TextBlock Text="پیست" />
+                                            </StackPanel>
+                                        </Button>
+                                        <StackPanel>
+                                            <materialDesign:PackIcon Kind="ContentCopy"/>
+                                            <TextBlock Text="کپی"/>
+                                        </StackPanel>
+                                        <StackPanel>
+                                            <materialDesign:PackIcon Kind="ContentCut"/>
+                                            <TextBlock Text="حذف"/>
+                                        </StackPanel>
+                                    </ContextMenu>
+                                </RichTextBox.ContextMenu>
+                            </RichTextBox>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,401 @@
+﻿<Page x:Class="DashBoard.PatientTreeView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:DashBoard"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      FlowDirection="RightToLeft"
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Background="{StaticResource ColorContentViewerGray}"
+      Title="PatientTreeView">
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Panel.ZIndex="100"
+                Background="#353535"  Effect="{StaticResource ShadowMajor}">
+            <StackPanel Height="64" Orientation="Horizontal" FlowDirection="RightToLeft">
+                <WrapPanel x:Name="WrpYesNo" Visibility="Collapsed">
+                    <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnAccept" 
+                            PreviewMouseDown="BtnAccept_OnPreviewMouseDown"
+                            Width="64" Height="64" 
+                            DockPanel.Dock="Left">
+                        <materialDesign:PackIcon 
+                            Kind="Check" Width="32" Height="32" 
+                            HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnCancel" 
+                            PreviewMouseDown="BtnCancel_OnPreviewMouseDown"
+                        Width="64" Height="64" DockPanel.Dock="Left">
+                        <materialDesign:PackIcon Kind="Close" Width="32" Height="32" 
+                                                 HorizontalAlignment="Center"/>
+                    </Button>
+                </WrapPanel>
+                <WrapPanel x:Name="WrpOverview">
+                    <Button Template="{StaticResource BtnGlossy}" 
+                            x:Name="BtnBack" 
+                            PreviewMouseDown="BtnBack_OnClick"
+                            Width="64" Height="64" 
+                            DockPanel.Dock="Left">
+                        <materialDesign:PackIcon 
+                            Kind="ArrowForward" Width="32" Height="32" 
+                            HorizontalAlignment="Center" />
+                    </Button>
+                    <Button Template="{StaticResource BtnGlossy}" Visibility="Hidden"
+                            x:Name="BtnEdit" 
+                            PreviewMouseDown="BtnEdit_OnClick"
+                        Width="64" Height="64" DockPanel.Dock="Left">
+                        <materialDesign:PackIcon Kind="Edit" Width="32" Height="32" 
+                                                 HorizontalAlignment="Center"/>
+                    </Button>
+                </WrapPanel>
+            </StackPanel>
+        </Border >
+
+        <WrapPanel x:Name="StckEditor">
+            <WrapPanel.Resources>
+                <Style TargetType="StackPanel"
+                       x:Key="StackPanelEditor">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                </Style>
+                <Style TargetType="TextBox"
+                       x:Key="OutLinedTextBoxEditor-MaterialDesignOutlinedTextFieldTextBox"
+                       BasedOn="{StaticResource MaterialDesignOutlinedTextFieldTextBox}">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </Style>
+                <Style TargetType="TextBox"
+                       x:Key="TextBoxEditor-MaterialDesignFloatingHintTextBox"
+                       BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </Style>
+                <Style TargetType="CheckBox"
+                       x:Key="CheckBoxEditor-MaterialDesignFloatingHintTextBox"
+                       BasedOn="{StaticResource {x:Type CheckBox}}">
+                    <Setter Property="Margin" Value="10,10,10,8"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+                <Style TargetType="ComboBox"
+                       x:Key="ComboBoxEditor-MaterialDesignFloatingHintComboBox"
+                       BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </Style>
+                <Style TargetType="ComboBox"
+                       BasedOn="{StaticResource {x:Type ComboBox}}">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                </Style>
+                <Style TargetType="Button"
+                       BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="Margin" Value="10,10,10,00"/>
+                </Style>
+                <Style TargetType="Border">
+                    <Setter Property="Margin" Value="10"/>
+                    <Setter Property="Padding" Value="10"/>
+                    <Setter Property="CornerRadius" Value="12"/>
+                    <Setter Property="Effect" Value="{StaticResource ShadowMedium}"/>
+                    <Setter Property="Background" Value="{StaticResource ColorNeutralMid}"/>
+                </Style>
+                <Style TargetType="DatePicker">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+            </WrapPanel.Resources>
+
+            <!--Image-->
+            <!--
+            <Border
+                x:Name="EdImage"
+                Background="#e9e9ef"
+                CornerRadius="6,6,6,12"
+                Margin="0,0,0,10"
+                Effect="{StaticResource ShadowMinor}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="BtnPreviousImage" Margin="0"
+                                Template="{StaticResource BtnGlossy}" ToolTip="قبلی"
+                                Grid.Column="0" Panel.ZIndex="20" Height="Auto">
+                            <materialDesign:PackIcon VerticalAlignment="Center"
+                                                     Foreground="{StaticResource ColorWhite}"
+                                                     Margin="4,0"
+                                                     Kind="MenuRight"
+                                                     Height="24"
+                                                     Width="24"/>
+                        </Button>
+                        <Button x:Name="BtnNextImage" Margin="0"
+                                Template="{StaticResource BtnGlossy}" ToolTip="بعدی"
+                                Grid.Column="2" Panel.ZIndex="20" Height="Auto">
+                            <materialDesign:PackIcon VerticalAlignment="Center"
+                                                     Foreground="{StaticResource ColorWhite}"
+                                                     Margin="4,0"
+                                                     Kind="MenuLeft"
+                                                     Height="24"
+                                                     Width="24"/>
+                        </Button>
+                        <Image x:Name="EdMainImage" Grid.Column="0" Panel.ZIndex="10"
+                               Source="http://localhost:13253/Resources/Koala.jpg"
+                               Stretch="UniformToFill" Grid.ColumnSpan="3"/>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Height="26">
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Margin" Value="5,0,5,0"/>
+                            </Style>
+                            <Style TargetType="Button">
+                                <Setter Property="FontSize" Value="14"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button Template="{StaticResource BtnGlossy}" ToolTip="تغییر عکس">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center"
+                                                         Foreground="{StaticResource ColorText}"
+                                                         Margin="4,0"
+                                                         Kind="SquareEditOutline"
+                                                         Height="12"
+                                                         Width="12"/>
+                                <TextBlock Text="تغییر" VerticalAlignment="Center"
+                                           Foreground="{StaticResource ColorText}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Template="{StaticResource BtnGlossy}" ToolTip="حذف عکس برای همیشه">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon VerticalAlignment="Center"
+                                                         Foreground="{StaticResource ColorText}"
+                                                         Margin="4,0"
+                                                         Kind="DeleteForeverOutline"
+                                                         Height="12"
+                                                         Width="12"/>
+                                <TextBlock Text="حذف" VerticalAlignment="Center"
+                                           Foreground="{StaticResource ColorText}"/>
+                            </StackPanel>
+                        </Button>
+                        -->
+            <!--ImageStatus-->
+            <!--
+                        <ComboBox x:Name="EdComboImageStatus"
+                                  IsEditable="True"
+                                  Loaded="EdComboImageStatus_Loaded"
+                                  materialDesign:HintAssist.Hint="نوع عکس"
+                                  materialDesign:HintAssist.HintOpacity=".26"
+                                  HorizontalAlignment="Right" VerticalAlignment="Center"
+                                  Margin="5,0" Width="76" Height="28"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>-->
+            <Border 
+            Margin="10" Padding="10" 
+            CornerRadius="12"
+            Effect="{StaticResource ShadowMinor}"
+            Background="{StaticResource ColorNeutralMid}">
+                <WrapPanel Orientation="Horizontal">
+                    <WrapPanel Orientation="Vertical">
+                        <TextBlock MinWidth="180"
+                                   Margin="8,2,2,0"
+                                   Text="بیمار" Foreground="{StaticResource ColorPrimaryLight}"/>
+
+                        <!--Name-->
+                        <TextBox x:Name="EdtxtName" MinWidth="120"
+                     materialDesign:HintAssist.Hint="نام"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--ParentalName-->
+                        <TextBox x:Name="EdtxtParentalName"
+                     materialDesign:HintAssist.Hint="نام خانوادگی"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--PassNoOrIdentification-->
+                        <TextBox x:Name="EdtxtPassNoOrIdentification"
+                     materialDesign:HintAssist.Hint="کد ملی یا پاسپورت"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Password-->
+                        <TextBox x:Name="EdtxtPassword"
+                     materialDesign:HintAssist.Hint="گذرواژه"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Job-->
+                        <TextBox x:Name="EdtxtJob"
+                     materialDesign:HintAssist.Hint="شغل"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Insurance-->
+                        <TextBox x:Name="EdtxtInsurance"
+                     materialDesign:HintAssist.Hint="بیمه"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+
+                        <!--Country-->
+                        <ComboBox x:Name="EdComboCountry"
+                      materialDesign:HintAssist.Hint="کشور"
+                      IsEditable="True"
+                      Style="{StaticResource ComboBoxEditor-MaterialDesignFloatingHintComboBox}"
+                      materialDesign:HintAssist.HintOpacity=".26"/>
+                        <!--City-->
+                        <ComboBox x:Name="EdComboCity"
+                      materialDesign:HintAssist.Hint="شهر"
+                      IsEditable="True"
+                      Style="{StaticResource ComboBoxEditor-MaterialDesignFloatingHintComboBox}"
+                      materialDesign:HintAssist.HintOpacity=".26"/>
+                        <!--Email-->
+                        <TextBox x:Name="EdtxtEmail"
+                             materialDesign:HintAssist.Hint="پست الکتروتیکی"
+                             Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                    </WrapPanel>
+                    <WrapPanel Orientation="Vertical">
+                        <TextBlock MinWidth="180"
+                                   Margin="8,2,2,0"
+                                   Text="" Foreground="{StaticResource ColorPrimaryLight}"/>
+
+                        <!--TimeRegistered-->
+                        <DatePicker Margin="10,10,10,00"
+                        x:Name="EdDatePickerTimeRegistered"
+                        materialDesign:HintAssist.Hint="تاریخ ثبت نام"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+
+                        <!--TellNumber-->
+                        <TextBox x:Name="EdtxtTellNumber"
+                     materialDesign:HintAssist.Hint="شماره تلفن"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--HealthCode-->
+                        <TextBox x:Name="EdtxtHealthCode"
+                     materialDesign:HintAssist.Hint="کد سلامت"
+                     Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Birthdate-->
+                        <DatePicker Margin="10,10,10,00"
+                        x:Name="EdDatePickerBirthDate"
+                        materialDesign:HintAssist.Hint="تاریخ تولد"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                        <!--DateReleased-->
+                        <DatePicker Margin="10,10,10,00"
+                        x:Name="EdDatePickerReleaseDate"
+                        materialDesign:HintAssist.Hint="تاریخ ترخیص"
+                        Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                        <!--IsHealthApple-->
+                        <CheckBox x:Name="EdCheckBoxIsHelthApple"
+                              Content="سیب سلامت"
+                              Style="{StaticResource CheckBoxEditor-MaterialDesignFloatingHintTextBox}" />
+
+                        <!--Address-->
+                        <TextBox x:Name="EdtxtAddress"
+                     Style="{StaticResource OutLinedTextBoxEditor-MaterialDesignOutlinedTextFieldTextBox}"
+                     MinHeight="50"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"
+                     materialDesign:HintAssist.Hint="آدرس"/>
+                        <!--AmountPayed-->
+                        <TextBox Margin="10,10,10,00" x:Name="EdtxtAmountPayed"
+                             Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+                             TextWrapping="Wrap"
+                             materialDesign:HintAssist.Hint="مقدار پرداخت شده"/>
+                        <!--Gender-->
+                        <StackPanel x:Name="EdStckGender" IsEnabled="False"
+                                Style="{StaticResource StackPanelEditor}"
+                                Orientation="Horizontal">
+                            <RadioButton x:Name="EdRadioMale"
+                                     Style="{StaticResource MaterialDesignTabRadioButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="HumanMale" Margin="5,0"/>
+                                    <TextBlock Text="آقا"/>
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton x:Name="EdRadioFemale"
+                                     Style="{StaticResource MaterialDesignTabRadioButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="HumanFemale" Margin="5,0"/>
+                                    <TextBlock Text="خانم"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </WrapPanel>
+                </WrapPanel>
+            </Border>
+            <!--Help-->
+            <StackPanel>
+                <Border x:Name="EdbrdHelp">
+                    <WrapPanel Orientation="Vertical">
+                        <TextBlock MinWidth="180"
+                                   Margin="8,2,2,0"
+                                   Text="کمک کننده" Foreground="{StaticResource ColorPrimaryLight}"/>
+                        <!--HelpName-->
+                        <TextBox x:Name="EdtxtHelpName"
+                                 materialDesign:HintAssist.Hint="نام"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--HelpJob-->
+                        <TextBox x:Name="EdtxtHelpJob"
+                                 materialDesign:HintAssist.Hint="شغل"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--HelpPassNo-->
+                        <TextBox x:Name="EdtxtHelpPassNo"
+                                 materialDesign:HintAssist.Hint="کد ملی یا پاسپورت"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--HelpTelNo-->
+                        <TextBox x:Name="EdtxtHelpTelNo"
+                                 materialDesign:HintAssist.Hint="شماره تلفن"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                    </WrapPanel>
+                </Border>
+                <Border x:Name="EdBrdHospital">
+                    <WrapPanel Orientation="Vertical">
+                        <TextBlock MinWidth="180"
+                                   Margin="8,2,2,0"
+                                   Text="بیمارستان" Foreground="{StaticResource ColorPrimaryLight}"/>
+                        <!--HospitalName-->
+                        <TextBox x:Name="EdTxtHospitalName"
+                                 materialDesign:HintAssist.Hint="نام"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Hospital-->
+                        <TextBox x:Name="EdTxtPercentage"
+                                 materialDesign:HintAssist.Hint="شغل"
+                                 Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        <!--Hospital-->
+                        <!--Longtitude Latitude-->
+                        <StackPanel Orientation="Horizontal" x:Name="EdStckGeo">
+                            <TextBox x:Name="EdtxtLongtitude" MaxWidth="100"
+                                materialDesign:HintAssist.Hint="طول جغرافیایی"
+                                Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                            <TextBox x:Name="EdtxtLatitude" MaxWidth="100"
+                                materialDesign:HintAssist.Hint="عرض جغرافیایی"
+                                Style="{StaticResource TextBoxEditor-MaterialDesignFloatingHintTextBox}"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </Border>
+            </StackPanel>
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="MinWidth" Value="90"></Setter>
+                        <Setter Property="Height" Value="44"></Setter>
+                        <Setter Property="Margin" Value="8"></Setter>
+                        <Setter Property="CornerRadius" Value="22"></Setter>
+                        <Setter Property="Effect" Value="{StaticResource ShadowMild}"></Setter>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="Pink"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Border x:Name="BrdRegistered" Background="{StaticResource ColorPatientRegistered}">
+                    <TextBlock Text="ثبت نام شده"/>
+                </Border>
+                <Border x:Name="BrdEntered" Background="{StaticResource ColorPatientEntered}">
+                    <TextBlock Text="داخل کشور"/>
+                </Border>
+                <Border x:Name="BrdReception" Background="{StaticResource ColorPatientReception}">
+                    <TextBlock Text="پذیرش شده"/>
+                </Border>
+                <Border x:Name="BrdServed" IsEnabled="False" Background="{StaticResource ColorPatientServed}">
+                    <TextBlock Text="اتمام خدمت"/>
+                </Border>
+            </StackPanel>
+        </WrapPanel>
+    </DockPanel>
+</Page>

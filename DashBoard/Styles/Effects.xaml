@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DashBoard">
+
+    <DropShadowEffect x:Key="ShadowMild" ShadowDepth=".5" Opacity=".8" BlurRadius="4"/>
+    <DropShadowEffect x:Key="ShadowMinor" ShadowDepth=".6" Opacity=".8" BlurRadius="8"/>
+    <DropShadowEffect x:Key="ShadowMedium" ShadowDepth=".8" Opacity=".8" BlurRadius="12"/>
+    <DropShadowEffect x:Key="ShadowMajor" ShadowDepth="1.2" Opacity=".8" BlurRadius="16"/>
+
+</ResourceDictionary>
